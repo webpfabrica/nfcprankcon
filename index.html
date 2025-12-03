@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFC Мітка</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #000;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .fullscreen-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .nfc-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.3s;
+        }
+        
+        .nfc-image:active {
+            transform: scale(0.98);
+        }
+        
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 24px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.6);
+            padding: 20px 40px;
+            border-radius: 15px;
+            z-index: 10;
+        }
+        
+        .error {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #e74c3c;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            font-size: 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 90%;
+            text-align: center;
+            z-index: 10;
+        }
+        
+        .playing-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.7);
+            padding: 15px 30px;
+            border-radius: 50px;
+            display: none;
+            z-index: 5;
+        }
+        
+        .playing-indicator.active {
+            display: block;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: translateX(-50%) scale(1);
+            }
+            50% {
+                opacity: 0.8;
+                transform: translateX(-50%) scale(1.05);
+            }
+        }
+
+        .tap-hint {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.6);
+            padding: 20px 40px;
+            border-radius: 50px;
+            pointer-events: none;
+            animation: fadeInOut 2s infinite;
+            z-index: 3;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading" id="loading">Завантаження...</div>
+    
+    <div class="fullscreen-container" id="imageContainer" style="display: none;">
+        <img class="nfc-image" src="" id="nfcImage">
+        <div class="tap-hint" id="tapHint">👆 Натисніть для відтворення</div>
+    </div>
+    
+    <div class="error" id="error" style="display: none;"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCB7a3NJRdzdhGhkH4-YfS79q0Qqb1VrJk",
+            authDomain: "nfc-tools-5085d.firebaseapp.com",
+            databaseURL: "https://nfc-tools-5085d-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "nfc-tools-5085d",
+            storageBucket: "nfc-tools-5085d.firebasestorage.app",
+            messagingSenderId: "854184677066",
+            appId: "1:854184677066:web:b2c539c1a878a5773bee33",
+            measurementId: "G-HJFLJPHX3S"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        const DEFAULT_IMAGE = 'https://via.placeholder.com/1920x1080/667eea/ffffff?text=NFC+Tag';
+        
+        let audioElement = null;
+        let tagData = null;
+        let hasPlayed = false;
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('user');
+        const tagId = urlParams.get('tag');
+        
+        if (!userId || !tagId) {
+            showError('Невірне посилання. Параметри не знайдено.');
+        } else {
+            loadTagData(userId, tagId);
+        }
+        
+        async function loadTagData(userId, tagId) {
+            try {
+                const tagRef = db.collection('user_tags').doc(userId).collection('tags').doc(tagId);
+                const tagDoc = await tagRef.get();
+                
+                if (!tagDoc.exists) {
+                    showError('Мітка не знайдена. Перевірте посилання.');
+                    return;
+                }
+                
+                tagData = tagDoc.data();
+                
+                if (!tagData.sound_path || !tagData.sound_id) {
+                    showError('Звук для цієї мітки ще не налаштований. Налаштуйте через панель управління.');
+                    return;
+                }
+                
+                const imageElement = document.getElementById('nfcImage');
+                imageElement.src = tagData.tag_image || DEFAULT_IMAGE;
+                
+                audioElement = new Audio(tagData.sound_path);
+                
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('imageContainer').style.display = 'flex';
+                
+                document.getElementById('imageContainer').addEventListener('click', playSound);
+                
+            } catch (error) {
+                console.error('Помилка завантаження:', error);
+                showError('Помилка завантаження даних. Спробуйте пізніше.');
+            }
+        }
+        
+        function playSound() {
+            if (!audioElement || !tagData) {
+                return;
+            }
+
+            if (!hasPlayed) {
+                document.getElementById('tapHint').style.display = 'none';
+                hasPlayed = true;
+            }
+            
+            if (!audioElement.paused) {
+                audioElement.pause();
+                audioElement.currentTime = 0;
+            }
+            
+            audioElement.play().then(() => {
+                showPlayingIndicator();
+            }).catch(error => {
+                console.error('Помилка відтворення:', error);
+                showError('Помилка відтворення звуку.');
+            });
+            
+            audioElement.onended = () => {
+                hidePlayingIndicator();
+            };
+        }
+        
+        function showPlayingIndicator() {
+            document.getElementById('playingIndicator').classList.add('active');
+        }
+        
+        function hidePlayingIndicator() {
+            document.getElementById('playingIndicator').classList.remove('active');
+        }
+        
+        function showError(message) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('imageContainer').style.display = 'none';
+            const errorElement = document.getElementById('error');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
