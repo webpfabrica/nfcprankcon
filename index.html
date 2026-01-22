@@ -27,10 +27,6 @@
             color: var(--light);
             min-height: 100vh;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
         }
         
         .container {
@@ -44,35 +40,44 @@
             padding: 20px;
         }
         
-        .nfc-tag {
+        .play-button {
             position: relative;
-            width: 320px;
-            height: 320px;
-            border-radius: 30px;
-            margin-bottom: 40px;
+            width: 90vw;
+            height: 90vw;
+            max-width: 500px;
+            max-height: 500px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            overflow: hidden;
-            box-shadow: 
-                0 20px 40px rgba(0, 0, 0, 0.6),
-                0 0 0 1px rgba(255, 255, 255, 0.1),
-                inset 0 0 30px rgba(255, 255, 255, 0.05);
-        }
-        
-        .nfc-tag:hover {
-            transform: scale(1.05);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             box-shadow: 
                 0 30px 60px rgba(138, 43, 226, 0.4),
-                0 0 0 2px rgba(138, 43, 226, 0.3),
-                inset 0 0 40px rgba(255, 255, 255, 0.1);
+                0 0 0 3px rgba(255, 255, 255, 0.1),
+                inset 0 0 60px rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            border: none;
+            outline: none;
         }
         
-        .nfc-tag:active {
+        .play-button:hover {
+            transform: scale(1.05);
+            box-shadow: 
+                0 40px 80px rgba(138, 43, 226, 0.6),
+                0 0 0 4px rgba(138, 43, 226, 0.4),
+                inset 0 0 80px rgba(255, 255, 255, 0.15);
+        }
+        
+        .play-button:active {
             transform: scale(0.95);
         }
         
-        .nfc-tag.active {
+        .play-button.active {
             animation: pulse 0.5s ease;
+            background: linear-gradient(135deg, var(--secondary), #00a8ff);
         }
         
         @keyframes pulse {
@@ -81,99 +86,67 @@
             100% { transform: scale(1); }
         }
         
-        .tag-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .play-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
             transition: transform 0.3s ease;
-        }
-        
-        .tag-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
-            padding: 25px;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-        }
-        
-        .nfc-tag:hover .tag-overlay {
-            transform: translateY(0);
-        }
-        
-        .tag-number {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--light);
-            margin-bottom: 8px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-        }
-        
-        .tag-color {
-            font-size: 16px;
-            color: var(--secondary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .color-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            display: inline-block;
         }
         
         .sound-name {
+            font-size: 24px;
+            font-weight: 600;
+            text-align: center;
+            margin: 20px 0 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            padding: 0 20px;
+            max-width: 80%;
+        }
+        
+        .tag-info {
             font-size: 18px;
-            font-weight: 600;
-            color: var(--light);
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 0 20px;
+            max-width: 90%;
         }
         
-        .controls {
-            display: flex;
-            gap: 20px;
-            margin-top: 30px;
-        }
-        
-        .btn {
-            background: linear-gradient(45deg, var(--primary), var(--primary-light));
-            color: white;
-            border: none;
-            padding: 16px 30px;
-            border-radius: 15px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 10px 20px rgba(138, 43, 226, 0.3);
-        }
-        
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(138, 43, 226, 0.4);
-        }
-        
-        .btn:active {
-            transform: translateY(-1px);
-        }
-        
-        .btn.btn-secondary {
+        .sound-wave {
+            width: 80%;
+            height: 4px;
             background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            border-radius: 2px;
+            margin-top: 30px;
+            overflow: hidden;
+            position: relative;
         }
         
-        .btn.btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.15);
+        .wave-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                var(--secondary), 
+                var(--primary), 
+                var(--secondary), 
+                transparent
+            );
+            background-size: 200% 100%;
+            animation: wave 2s linear infinite;
+            display: none;
+        }
+        
+        .wave-animation.active {
+            display: block;
+        }
+        
+        @keyframes wave {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
         }
         
         .status {
@@ -188,6 +161,7 @@
             align-items: center;
             gap: 12px;
             animation: slideIn 0.3s ease;
+            z-index: 1000;
         }
         
         @keyframes slideIn {
@@ -255,62 +229,6 @@
             text-align: center;
         }
         
-        .sound-visualizer {
-            width: 100%;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-            margin-top: 20px;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .sound-wave {
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 100%;
-            background: linear-gradient(90deg, 
-                transparent, 
-                var(--secondary), 
-                var(--primary), 
-                var(--secondary), 
-                transparent
-            );
-            background-size: 200% 100%;
-            animation: wave 2s linear infinite;
-            display: none;
-        }
-        
-        @keyframes wave {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-        
-        .sound-wave.active {
-            display: block;
-        }
-        
-        .tag-info {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .tag-title {
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            background: linear-gradient(45deg, var(--secondary), var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .tag-subtitle {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 16px;
-        }
-        
         .instructions {
             position: absolute;
             bottom: 30px;
@@ -318,34 +236,57 @@
             color: rgba(255, 255, 255, 0.5);
             font-size: 14px;
             padding: 0 20px;
+            max-width: 90%;
+        }
+        
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
+        
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
         }
         
         @media (max-width: 768px) {
-            .nfc-tag {
-                width: 280px;
-                height: 280px;
+            .play-button {
+                width: 85vw;
+                height: 85vw;
             }
             
-            .controls {
-                flex-direction: column;
-                width: 100%;
-                max-width: 280px;
+            .play-icon {
+                font-size: 60px;
             }
             
-            .btn {
-                width: 100%;
-                justify-content: center;
+            .sound-name {
+                font-size: 20px;
+            }
+            
+            .tag-info {
+                font-size: 16px;
             }
         }
         
-        .nfc-icon {
-            font-size: 64px;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: rgba(255, 255, 255, 0.2);
-            pointer-events: none;
+        @media (max-width: 480px) {
+            .play-button {
+                width: 80vw;
+                height: 80vw;
+            }
+            
+            .play-icon {
+                font-size: 50px;
+            }
+            
+            .sound-name {
+                font-size: 18px;
+            }
         }
     </style>
 </head>
@@ -356,46 +297,19 @@
         <div class="loading-text" id="loadingText">Завантаження мітки...</div>
     </div>
     
-    <!-- Контейнер с меткой -->
+    <!-- Контейнер с кнопкой -->
     <div class="container" id="container" style="display: none;">
-        <div class="tag-info">
-            <div class="tag-title" id="tagTitle">NFC Мітка</div>
-            <div class="tag-subtitle" id="tagSubtitle">Натисніть для відтворення</div>
-        </div>
-        
-        <div class="nfc-tag" id="nfcTag">
-            <div class="nfc-icon">🏷️</div>
-            <img class="tag-image" src="" id="tagImage" alt="NFC Tag">
-            <div class="tag-overlay">
-                <div class="tag-number" id="tagNumber">Мітка #0</div>
-                <div class="tag-color">
-                    <span class="color-dot" id="colorDot"></span>
-                    <span id="colorName">Колір</span>
-                </div>
-                <div class="sound-name" id="soundName">
-                    <span>🔊</span>
-                    <span id="currentSound">Звук не обрано</span>
-                </div>
+        <button class="play-button" id="playButton" onclick="playSound()">
+            <div class="play-icon" id="playIcon">▶️</div>
+            <div class="sound-name" id="soundName">Звук не обрано</div>
+            <div class="tag-info" id="tagInfo">Натисніть для відтворення</div>
+            <div class="sound-wave">
+                <div class="wave-animation" id="waveAnimation"></div>
             </div>
-        </div>
-        
-        <div class="sound-visualizer">
-            <div class="sound-wave" id="soundWave"></div>
-        </div>
-        
-        <div class="controls">
-            <button class="btn" id="playBtn" onclick="playSound()">
-                <span id="playIcon">▶️</span>
-                <span id="playText">Відтворити</span>
-            </button>
-            <button class="btn btn-secondary" onclick="configureTag()">
-                <span>⚙️</span>
-                Налаштувати
-            </button>
-        </div>
+        </button>
         
         <div class="instructions">
-            Натисніть на мітку або кнопку для відтворення звуку
+            Натисніть для відтворення звуку
         </div>
     </div>
     
@@ -429,88 +343,52 @@
         let isPlaying = false;
         let soundCache = new Map();
         
-        // Цвета для меток
-        const COLOR_MAP = {
-            'red': '#dc3545',
-            'blue': '#0d6efd',
-            'green': '#198754',
-            'yellow': '#ffc107',
-            'orange': '#fd7e14',
-            'purple': '#6f42c1',
-            'black': '#212529',
-            'white': '#ffffff',
-            'brown': '#8b4513',
-            'pink': '#d63384'
-        };
-        
-        const COLOR_NAMES = {
-            'red': 'Червоний',
-            'blue': 'Синій',
-            'green': 'Зелений',
-            'yellow': 'Жовтий',
-            'orange': 'Помаранчевий',
-            'purple': 'Фіолетовий',
-            'black': 'Чорний',
-            'white': 'Білий',
-            'brown': 'Коричневий',
-            'pink': 'Рожевий'
-        };
-        
         // Звуки по умолчанию
         const DEFAULT_SOUNDS = {
-    'sound1': 'sounds/1-000-000-000-iq.mp3',
-    'sound2': 'sounds/999-social-credit-siren.mp3',
-    'sound3': 'sounds/aaaaaaaaaaaaaaaaaaaa-e-lutador.mp3',
-    'sound4': 'sounds/buba-pirozhok.mp3',
-    'sound5': 'sounds/cat-laugh-meme-1.mp3',
-    'sound6': 'sounds/chicken-on-tree-screaming.mp3',
-    'sound7': 'sounds/devushka-tak-silno-stonet.mp3',
-    'sound8': 'sounds/dexter-meme.mp3',
-    'sound9': 'sounds/diadia-sasha.mp3',
-    'sound10': 'sounds/dimon.mp3',
-    'sound11': 'sounds/Pro-metai.mp3',
-    'sound12': 'sounds/fahhhhhhhhhhhh.mp3',
-    'sound13': 'sounds/gay.mp3',
-    'sound14': 'sounds/germaniia.mp3',
-    'sound15': 'sounds/goo-goo-gagaaa.mp3',
-    'sound16': 'sounds/gryzt-kakashki.mp3',
-    'sound17': 'sounds/gudok-poezda.mp3',
-    'sound18': 'sounds/ia-nasral-v-turbinu.mp3',
-    'sound19': 'sounds/imbo-otryzhka.mp3',
-    'sound20': 'sounds/kimpintiao.mp3',
-    'sound21': 'sounds/kosha-brosila-kotiat.mp3',
-    'sound22': 'sounds/lobotomy-sound-ef.mp3',
-    'sound23': 'sounds/luchshii-rington-na.mp3',
-    'sound24': 'sounds/marmok-soundpad.mp3',
-    'sound25': 'sounds/net-idi-na.mp3',
-    'sound26': 'sounds/oi-oi-oe-oi-a-eye-e.mp3',
-    'sound27': 'sounds/perduliatsia.mp3',
-    'sound28': 'sounds/pkh.mp3',
-    'sound29': 'sounds/pod-novyi-god-nas.mp3',
-    'sound30': 'sounds/pozharniaia-trevoga.mp3',
-    'sound31': 'sounds/putin-vinovat.mp3',
-    'sound32': 'sounds/sad-meow-song.mp3',
-    'sound33': 'sounds/sistema-poiska-pi-sa.mp3',
-    'sound34': 'sounds/skachai-maks.mp3',
-    'sound35': 'sounds/skeleton-with-shield.mp3',
-    'sound36': 'sounds/smekh-rebenka.mp3',
-    'sound37': 'sounds/smeshariki-pogonia.mp3',
-    'sound38': 'sounds/stop-mne-ne-priiat.mp3',
-    'sound39': 'sounds/subo-pesnia.mp3',
-    'sound40': 'sounds/vizg-svini.mp3',
-    'sound41': 'sounds/votch-demo.mp3',
-    'sound42': 'sounds/zaika-davai.mp3',
-    'sound43': 'sounds/zhioistkaia-otryzhka.mp3',
-    'sound44': 'sounds/zvuk-litvina.mp3'
-};
-        
-        // Изображения для меток по цветам
-        const TAG_IMAGES = {
-            'red': 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&q=80',
-            'blue': 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w-800&q=80',
-            'green': 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&q=80',
-            'yellow': 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80',
-            'purple': 'https://images.unsplash.com/photo-1550686041-366ad85a1355?w=800&q=80'
+            'sound1': 'sounds/1-000-000-000-iq.mp3',
+            'sound2': 'sounds/999-social-credit-siren.mp3',
+            'sound3': 'sounds/aaaaaaaaaaaaaaaaaaaa-e-lutador.mp3',
+            'sound4': 'sounds/buba-pirozhok.mp3',
+            'sound5': 'sounds/cat-laugh-meme-1.mp3',
+            'sound6': 'sounds/chicken-on-tree-screaming.mp3',
+            'sound7': 'sounds/devushka-tak-silno-stonet.mp3',
+            'sound8': 'sounds/dexter-meme.mp3',
+            'sound9': 'sounds/diadia-sasha.mp3',
+            'sound10': 'sounds/dimon.mp3',
+            'sound11': 'sounds/Pro-metai.mp3',
+            'sound12': 'sounds/fahhhhhhhhhhhh.mp3',
+            'sound13': 'sounds/gay.mp3',
+            'sound14': 'sounds/germaniia.mp3',
+            'sound15': 'sounds/goo-goo-gagaaa.mp3',
+            'sound16': 'sounds/gryzt-kakashki.mp3',
+            'sound17': 'sounds/gudok-poezda.mp3',
+            'sound18': 'sounds/ia-nasral-v-turbinu.mp3',
+            'sound19': 'sounds/imbo-otryzhka.mp3',
+            'sound20': 'sounds/kimpintiao.mp3',
+            'sound21': 'sounds/kosha-brosila-kotiat.mp3',
+            'sound22': 'sounds/lobotomy-sound-ef.mp3',
+            'sound23': 'sounds/luchshii-rington-na.mp3',
+            'sound24': 'sounds/marmok-soundpad.mp3',
+            'sound25': 'sounds/net-idi-na.mp3',
+            'sound26': 'sounds/oi-oi-oe-oi-a-eye-e.mp3',
+            'sound27': 'sounds/perduliatsia.mp3',
+            'sound28': 'sounds/pkh.mp3',
+            'sound29': 'sounds/pod-novyi-god-nas.mp3',
+            'sound30': 'sounds/pozharniaia-trevoga.mp3',
+            'sound31': 'sounds/putin-vinovat.mp3',
+            'sound32': 'sounds/sad-meow-song.mp3',
+            'sound33': 'sounds/sistema-poiska-pi-sa.mp3',
+            'sound34': 'sounds/skachai-maks.mp3',
+            'sound35': 'sounds/skeleton-with-shield.mp3',
+            'sound36': 'sounds/smekh-rebenka.mp3',
+            'sound37': 'sounds/smeshariki-pogonia.mp3',
+            'sound38': 'sounds/stop-mne-ne-priiat.mp3',
+            'sound39': 'sounds/subo-pesnia.mp3',
+            'sound40': 'sounds/vizg-svini.mp3',
+            'sound41': 'sounds/votch-demo.mp3',
+            'sound42': 'sounds/zaika-davai.mp3',
+            'sound43': 'sounds/zhioistkaia-otryzhka.mp3',
+            'sound44': 'sounds/zvuk-litvina.mp3'
         };
         
         // Получаем параметры URL
@@ -527,17 +405,38 @@
             
             loadTagData(userId, tagId);
             
-            // Добавляем обработчик клика на метку
-            document.getElementById('nfcTag').addEventListener('click', playSound);
-            
-            // Добавляем обработчики для кнопок управления
+            // Добавляем обработчик для клавиши пробела
             document.addEventListener('keydown', (e) => {
                 if (e.code === 'Space' || e.code === 'Enter') {
                     e.preventDefault();
                     playSound();
                 }
             });
+            
+            // Добавляем риппл-эффект
+            const playButton = document.getElementById('playButton');
+            playButton.addEventListener('click', createRipple);
         });
+        
+        // Создание риппл-эффекта
+        function createRipple(e) {
+            const button = e.currentTarget;
+            const circle = document.createElement("span");
+            const diameter = Math.max(button.clientWidth, button.clientHeight);
+            const radius = diameter / 2;
+            
+            circle.style.width = circle.style.height = `${diameter}px`;
+            circle.style.left = `${e.clientX - button.getBoundingClientRect().left - radius}px`;
+            circle.style.top = `${e.clientY - button.getBoundingClientRect().top - radius}px`;
+            circle.classList.add("ripple");
+            
+            const ripple = button.getElementsByClassName("ripple")[0];
+            if (ripple) {
+                ripple.remove();
+            }
+            
+            button.appendChild(circle);
+        }
         
         // Загрузка данных метки
         async function loadTagData(userId, tagId) {
@@ -584,27 +483,10 @@
         function updateUI() {
             if (!currentTag) return;
             
-            // Устанавливаем заголовок
-            document.getElementById('tagNumber').textContent = `Мітка #${currentTag.tag_number}`;
-            document.getElementById('tagTitle').textContent = `Мітка #${currentTag.tag_number}`;
-            
-            // Устанавливаем цвет
-            const color = currentTag.color || 'purple';
-            const colorHex = COLOR_MAP[color] || COLOR_MAP.purple;
-            const colorName = COLOR_NAMES[color] || 'Фіолетовий';
-            
-            document.getElementById('colorDot').style.backgroundColor = colorHex;
-            document.getElementById('colorName').textContent = colorName;
-            document.getElementById('tagSubtitle').textContent = colorName;
-            
-            // Устанавливаем изображение
-            const tagImage = document.getElementById('tagImage');
-            tagImage.src = TAG_IMAGES[color] || TAG_IMAGES.purple;
-            
-            // Устанавливаем звук
+            // Устанавливаем название звука
             if (currentTag.sound_name) {
-                document.getElementById('currentSound').textContent = currentTag.sound_name;
-                document.getElementById('tagSubtitle').textContent += ` | ${currentTag.sound_name}`;
+                document.getElementById('soundName').textContent = currentTag.sound_name;
+                document.getElementById('tagInfo').textContent = `Мітка #${currentTag.tag_number}`;
             }
         }
         
@@ -641,22 +523,22 @@
             audioElement.addEventListener('play', () => {
                 isPlaying = true;
                 updatePlayButton();
-                document.getElementById('soundWave').classList.add('active');
-                document.getElementById('nfcTag').classList.add('active');
+                document.getElementById('waveAnimation').classList.add('active');
+                document.getElementById('playButton').classList.add('active');
             });
             
             audioElement.addEventListener('pause', () => {
                 isPlaying = false;
                 updatePlayButton();
-                document.getElementById('soundWave').classList.remove('active');
-                document.getElementById('nfcTag').classList.remove('active');
+                document.getElementById('waveAnimation').classList.remove('active');
+                document.getElementById('playButton').classList.remove('active');
             });
             
             audioElement.addEventListener('ended', () => {
                 isPlaying = false;
                 updatePlayButton();
-                document.getElementById('soundWave').classList.remove('active');
-                document.getElementById('nfcTag').classList.remove('active');
+                document.getElementById('waveAnimation').classList.remove('active');
+                document.getElementById('playButton').classList.remove('active');
                 showStatus('Відтворення завершено', 'success');
             });
         }
@@ -692,23 +574,12 @@
         // Обновление кнопки воспроизведения
         function updatePlayButton() {
             const playIcon = document.getElementById('playIcon');
-            const playText = document.getElementById('playText');
             
             if (isPlaying) {
                 playIcon.textContent = '⏸️';
-                playText.textContent = 'Пауза';
             } else {
                 playIcon.textContent = '▶️';
-                playText.textContent = 'Відтворити';
             }
-        }
-        
-        // Перенаправление на страницу настройки
-        function configureTag() {
-            if (!currentTag) return;
-            
-            const configUrl = `https://webpfabrica.github.io/nfc-setting/?user=${currentTag.userId}`;
-            window.open(configUrl, '_blank');
         }
         
         // Показать статусное сообщение
